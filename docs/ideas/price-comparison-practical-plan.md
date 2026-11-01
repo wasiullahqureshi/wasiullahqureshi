@@ -151,3 +151,20 @@ _Owner confirmed 2026-11-01. It is not a personal or family tool._
 
 ### Next concrete step
 Run Phase 0: gather receipts, test extractors, and record accuracy and cost in `docs/ideas/` so the go/no-go is based on data.
+
+## 10. Scope: which purchases are covered
+_Owner confirmed 2026-11-01._
+
+The app covers **groceries, medicines, and any routine or monthly repeated purchase** (for example household supplies, toiletries, baby items, pet food, cooking gas, school supplies, recurring pharmacy refills).
+
+### What this means for the design
+- **Category is a tag, not a separate mode.** One receipt scanner and one price history serve all categories. Suggested starting categories: Groceries, Medicines, Household, Personal care, Other. Users can add their own.
+- **"Repeat purchase" is the core concept.** The app detects items bought more than once (by product match) and promotes them to the user's **My Basket**. Comparison, price-rise alerts and savings estimates focus on Basket items, since those are what a switch actually saves money on.
+- **Purchase rhythm**: record how often each item is bought (weekly, monthly), so the app can estimate monthly spend per item and the real value of switching stores.
+- **Medicines need extra care**: match on active ingredient, strength and pack size (not brand alone); show generic vs brand price when the user chooses to; never give medical advice or suggest changing a prescribed medicine. Show a disclaimer. Treat these records as sensitive health data in privacy design.
+- **One-off purchases** (appliances, clothes) are stored from the receipt but excluded from comparison and alerts by default, to keep suggestions relevant.
+- **Non-store repeat bills** (utilities, subscriptions) are out of scope for v1; revisit as a later add-on with bill reminders.
+
+### Effect on the MVP
+- The review screen asks for or auto-suggests a category per item, and offers "add to My Basket" on items seen more than once.
+- The monthly report is grouped by category: spend, price increases, and switch savings per category.
