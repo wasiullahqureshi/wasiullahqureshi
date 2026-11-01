@@ -4,6 +4,7 @@ One file per idea in this folder. Newest first in the index. Add a new row whene
 
 | Date | Idea | Status | Note |
 |------|------|--------|------|
+| 2026-11-01 | ↳ Practical plan, market and competitor check | planning | [price-comparison-practical-plan.md](price-comparison-practical-plan.md) |
 | 2026-11-01 | Household price comparison Android app (bills, store prices, budget, savings add-ons) | idea | [price-comparison-android-app.md](price-comparison-android-app.md) |
 
 ## Template for a new idea
