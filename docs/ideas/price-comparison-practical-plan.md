@@ -120,3 +120,34 @@ Free core. Paid tier: unlimited history, price-rise alerts, family sharing, expo
 1. Cloud extraction acceptable (needs a backend and has per-receipt cost), or strictly on-device?
 2. Free with limits (e.g. N scans/month) or paid from the start, to cover extraction cost?
 3. Which 3–4 countries/languages to test first in Phase 0?
+
+## 9. Decision: this is a public product
+_Owner confirmed 2026-11-01. It is not a personal or family tool._
+
+### What this requires beyond the MVP
+- **Backend from day one**: user accounts (or anonymous IDs), the receipt-extraction proxy (keeps API keys off the phone), rate limiting, and abuse protection. Plan for a managed stack (e.g. serverless + managed DB) rather than running servers.
+- **Cost control**: every cloud scan costs money. Needs per-user scan limits, caching, image compression, and cost monitoring before launch. Measure real cost per receipt in Phase 0.
+- **Business model** (decide before launch): free tier with a monthly scan limit; paid tier for unlimited scans, price-rise alerts, family sharing, export. No ads and no selling personal data.
+- **Legal and compliance**: privacy policy and terms; GDPR/UK GDPR consent, data export and deletion; Google Play Data Safety form; children's-data and health-data (medicine purchases) handling; regional rules where launched.
+- **Play Store readiness**: Play Console account, store listing, screenshots, content rating, closed testing track (new personal developer accounts must run a closed test with a minimum number of testers before production; check current Play policy), crash reporting and analytics (privacy-respecting).
+- **Support and trust**: in-app feedback, a way to report wrong extractions, clear message that savings suggestions are estimates.
+- **Localization**: translated UI for launch markets; locale-aware dates, numbers and currencies.
+
+### Public-launch roadmap (replaces the personal-use framing)
+| Phase | Goal |
+|-------|------|
+| 0. Feasibility | 50+ real receipts, several countries and languages; measure extraction accuracy and cost per scan. Go/no-go. |
+| 1. Private alpha | Working scan, review, price history. 10-20 testers in 2-3 countries. |
+| 2. Closed beta on Play | Billing, scan limits, privacy and consent flows, backend hardening. Aim for a few hundred users. |
+| 3. Public launch | One or two launch markets first, not worldwide at once; localize UI and tune matching for those. |
+| 4. Network effects | Opt-in anonymous crowd-sourced prices, to make comparison work even for stores a user hasn't visited. |
+| 5. Add-ons | Budgets, savings goals, shopping list with cheapest store, then long-term savings projections. |
+
+### Risks specific to a public product
+- **Cold-start**: value is low until a user has logged receipts from 2+ stores. Needs onboarding that shows value on the first scan (e.g. unit-price insight, price-rise note on a repeated item).
+- **Competition**: Price Book, GrocSnap, Aisle and others already exist. Position on accuracy of scanning in many languages, medicines, and a clear monthly savings number.
+- **Unit economics**: if cost per scan exceeds what the free/paid tiers earn, the product loses money. Validate in Phase 0 and 1.
+- **Data quality** once prices are crowd-sourced: wrong or malicious entries need validation and moderation.
+
+### Next concrete step
+Run Phase 0: gather receipts, test extractors, and record accuracy and cost in `docs/ideas/` so the go/no-go is based on data.
