@@ -2,6 +2,9 @@
 
 _Noted 2026-11-01. Builds on [price-comparison-android-app.md](price-comparison-android-app.md). Status: planning._
 
+> **Revision (owner decision): global from day one, receipts captured by camera.**
+> This supersedes the "local market" and "manual entry first" assumptions below. See section 8.
+
 ## 1. Market check (what already exists)
 Research was a quick web search, not a full market study. Verify each app yourself before deciding.
 
@@ -61,3 +64,59 @@ Free core. Paid tier: unlimited history, price-rise alerts, family sharing, expo
 2. Receipt language(s) and whether most bills are thermal print.
 3. Build for yourself/family first, or as a public product?
 4. Okay to start with manual entry and add OCR later?
+
+## 8. Revised scope: global + camera-first
+
+### What changes
+- **Camera scan is the core feature**, not a later add-on. Low effort per bill is the whole product.
+- **Global means** any country, currency, language, receipt layout, tax format and store chain.
+- Local-market differentiation (section 2, point 1) becomes: *works on any receipt anywhere*.
+
+### Receipt pipeline
+1. Camera capture with edge detection, auto-crop, de-skew, and a "retake" hint for blur or glare (faded thermal paper is common).
+2. **Extraction to structured data**: store name, date, currency, line items (name, qty, unit/pack size, price), tax, total.
+3. **Validation**: line items must add up to the total; if not, flag for the user to fix instead of saving silently.
+4. **Review screen**: user confirms or corrects items (fast, one tap per line). Corrections feed the product-matching memory.
+5. Save locally, keep the receipt image on the device.
+
+### OCR approach for a global app
+- On-device OCR (Google ML Kit) is free and private, but its text recognition covers only some scripts (Latin, Chinese, Devanagari, Japanese, Korean; check the current docs, I don't believe Arabic/Urdu is supported). That leaves out many large markets.
+- A **cloud vision model** reads any language and layout and returns structured JSON directly, but costs money per receipt and sends images off-device.
+- **Recommended hybrid:** on-device for capture/crop quality checks and (where supported) quick extraction; cloud vision model as the main extractor or fallback. Make cloud use explicit in the privacy policy and let users opt out (manual entry stays available).
+- Per-receipt cloud cost must be measured on real receipts before pricing the product. Don't assume a number.
+
+### Product matching worldwide
+- Receipt text is abbreviated and in many languages ("PANADOL TAB 20", "بنادول ٢٠").
+- Use **barcode/GTIN** whenever the receipt or a quick scan provides it (global standard), plus a cross-language embedding or LLM match to propose "same product as ..." with user confirmation.
+- Normalise **unit price** (per kg / litre / 100 g / tablet) and **convert currencies** only for display; compare within one currency unless the user shops across borders.
+
+### Data and privacy (global)
+- Receipts can reveal health purchases (medicines) and location. Default to **on-device storage**; cloud backup opt-in.
+- GDPR (EU/UK) and similar laws: consent, export and delete-my-data are required once any server is involved.
+- **Crowd-sourced prices** become more valuable globally (no local data needed) but need a backend, anonymisation, and abuse moderation. Keep for phase 3; v1 compares only the user's own receipts.
+
+### Revised MVP
+- Camera scan → review → save, for any language the extractor supports.
+- Per-item price history and "cheapest store" from the user's own receipts.
+- Monthly summary: price increases and switch-savings estimate.
+- Multi-currency and locale-aware formatting from the start (store the currency on every receipt).
+- Android, Kotlin + Jetpack Compose, Room, CameraX; cloud extraction service behind a thin backend (keeps API keys off the phone).
+
+### Revised roadmap
+| Phase | Scope |
+|-------|-------|
+| 0. Prototype extraction (1–2 wks) | Collect ~50 real receipts from several countries/languages. Run them through candidate extractors. Measure accuracy and cost per receipt. This decides feasibility. |
+| 1. MVP | Revised MVP above. Closed test with 10–20 users in 2–3 countries. |
+| 2. Add-ons | Budgets, savings goals, price-rise alerts, shopping list with cheapest store. |
+| 3. Network effects | Opt-in anonymous price sharing, so users can see prices at stores they haven't bought from yet. |
+| Later | Retirement projections, bill reminders, family sharing. |
+
+### Key risks added by this scope
+- **Extraction accuracy and cost** across languages is now the make-or-break issue. Phase 0 exists to test it.
+- **App store, tax and privacy compliance** differ by country.
+- Without crowd-sourced data, a global app still only helps users who shop at 2+ stores; network effects (phase 3) are what make it scale.
+
+### Open questions
+1. Cloud extraction acceptable (needs a backend and has per-receipt cost), or strictly on-device?
+2. Free with limits (e.g. N scans/month) or paid from the start, to cover extraction cost?
+3. Which 3–4 countries/languages to test first in Phase 0?
